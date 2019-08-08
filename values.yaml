@@ -1,4 +1,4 @@
-# Default values for awesome-chart.
+# Default values for default-dotnet-app.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 fullnameOverride: my-app
@@ -17,9 +17,15 @@ image:
 service:
   type: ClusterIP
   port: 80
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+
 
 hpa:
   enabled: false
+  ## Enables HorizontalPodAutoscaler. To activate it use hpa.enabled: true
+  ## You can define the autoscaling behavior with the options below.
   scaleTargetRef:
     kind: Deployment
   maxReplicas: 2
@@ -32,6 +38,9 @@ hpa:
 
 ingress:
   enabled: false
+  ## Enables creating an Ingress resource to expose application outside the k8s cluster.
+  ## To activate it use ingress.enabled: true
+  ## You can define how the application will be exposed with the options below.
   annotations:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -82,11 +91,11 @@ tolerations: []
 
 affinity: {}
 
-## This section is used to create environment variables in order to fulfill application needs.
+## This section is used to create environment variables to fulfill application needs.
 ## Any environment variable in this key value map will be created into container's operating system using the "name" property.
-## You need to specify what is the type of environment variable. If it's a "plain" type the value will be injected to the deployment as is.
-## If there's any environment variable of the type "secret" (meaning that you shouldn't know it's value) a resource secret will be created 
-## within the application's release into k8s with an empty value to be filled latter.
+## You need to specify what is the type of environment variable. If it's a "plain" type the value will be injected to the deployment manifest as is.
+## If there's any environment variable of the type "secret" (meaning that you shouldn't know it's value) a resource secret will be created as part of
+## the release into k8s with an empty value to be filled latter.
 # env:
 #   - name: PLAIN_TEXT_ENV_VAR1
 #     type: plain
