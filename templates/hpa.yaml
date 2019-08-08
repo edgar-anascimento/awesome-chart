@@ -1,0 +1,21 @@
+{{- if .Values.hpa.enabled -}}
+{{- $fullName := include "awesome-chart.fullname" . -}}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $fullName }}
+  labels:
+    app.kubernetes.io/name: {{ include "awesome-chart.name" . }}
+    helm.sh/chart: {{ include "awesome-chart.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  scaleTargetRef:
+    apiVersion: {{ .Values.hpa.scaleTargetRef.apiVersion }}
+    kind: {{ .Values.hpa.scaleTargetRef.kind }}
+    name: {{ $fullName }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  metrics:
+    {{- toYaml .Values.hpa.metrics | nindent 4 -}}
+{{- end }}
